@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
+  Bell,
   Building2,
   Contact,
   CreditCard,
@@ -15,9 +16,11 @@ import {
   LayoutList,
   LogOut,
   Mail,
-  Bell,
+  Menu,
   Repeat,
   Search,
+  ScrollText,
+  Settings,
   Sheet as SheetIcon,
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -35,23 +38,51 @@ import { GlobalSearch } from "@/components/global-search";
 import { useNotifications } from "@/lib/hooks";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
 
-const nav = [
-  { href: "/", label: "Dashboard", icon: Gauge },
-  { href: "/pipeline", label: "Pipeline", icon: KanbanSquare },
-  { href: "/leads", label: "Leads", icon: LayoutList },
-  { href: "/companies", label: "Companies", icon: Building2 },
-  { href: "/contacts", label: "Contacts", icon: Contact },
-  { href: "/follow-ups", label: "Follow-ups", icon: Inbox },
-  { href: "/activities", label: "Activities", icon: Mail },
-  { href: "/proposals", label: "Proposals", icon: SheetIcon },
-  { href: "/clients", label: "Clients", icon: Contact },
-  { href: "/projects", label: "Projects", icon: FolderKanban },
-  { href: "/recurring", label: "Recurring", icon: Repeat },
-  { href: "/revenue", label: "Revenue", icon: CreditCard },
-  { href: "/research", label: "Research", icon: FlaskConical },
-  { href: "/templates", label: "Templates", icon: Mail },
-  { href: "/settings", label: "Settings", icon: Bell },
+type NavItem = { href: string; label: string; icon: React.ComponentType<{ className?: string }> };
+
+const NAV_GROUPS: { label?: string; items: NavItem[] }[] = [
+  {
+    items: [
+      { href: "/", label: "Dashboard", icon: Gauge },
+      { href: "/pipeline", label: "Pipeline", icon: KanbanSquare },
+      { href: "/follow-ups", label: "Follow-ups", icon: Inbox },
+    ],
+  },
+  {
+    label: "Sales",
+    items: [
+      { href: "/leads", label: "Leads", icon: LayoutList },
+      { href: "/proposals", label: "Proposals", icon: SheetIcon },
+      { href: "/clients", label: "Clients", icon: Contact },
+    ],
+  },
+  {
+    label: "Directory",
+    items: [
+      { href: "/companies", label: "Companies", icon: Building2 },
+      { href: "/contacts", label: "Contacts", icon: Contact },
+      { href: "/activities", label: "Activities", icon: Mail },
+    ],
+  },
+  {
+    label: "Delivery",
+    items: [
+      { href: "/projects", label: "Projects", icon: FolderKanban },
+      { href: "/recurring", label: "Recurring", icon: Repeat },
+      { href: "/revenue", label: "Revenue", icon: CreditCard },
+    ],
+  },
+  {
+    label: "Workspace",
+    items: [
+      { href: "/research", label: "Research", icon: FlaskConical },
+      { href: "/templates", label: "Templates", icon: ScrollText },
+      { href: "/settings", label: "Settings", icon: Settings },
+    ],
+  },
 ];
 
 type Me = { user: { id: string; name: string; email: string } };
@@ -59,33 +90,42 @@ type Me = { user: { id: string; name: string; email: string } };
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   return (
-    <div className="flex h-full flex-col gap-2">
-      <div className="flex h-12 items-center px-4">
-        <Link href="/" className="flex items-center gap-2 font-semibold" onClick={onNavigate}>
-          <span className="flex size-6 items-center justify-center rounded bg-foreground text-background text-xs font-bold">
+    <div className="flex h-full flex-col">
+      <div className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
+        <Link href="/" className="flex items-center gap-2 text-sm font-semibold tracking-tight" onClick={onNavigate}>
+          <span className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground text-xs font-bold">
             C
           </span>
           ClientOS
         </Link>
       </div>
-      <ScrollArea className="flex-1 px-2">
-        <nav className="flex flex-col gap-0.5 pb-4">
-          {nav.map((item) => {
-            const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={onNavigate}
-                className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-sm ${
-                  active ? "bg-secondary font-medium" : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
-                }`}
-              >
-                <item.icon className="size-4" />
-                {item.label}
-              </Link>
-            );
-          })}
+      <ScrollArea className="flex-1 px-2 py-3">
+        <nav aria-label="Main navigation" className="flex flex-col gap-4 pb-4">
+          {NAV_GROUPS.map((group, gi) => (
+            <div key={gi} className="flex flex-col gap-0.5">
+              {group.label && <p className="px-3 pb-1 text-[11px] font-medium uppercase tracking-wider text-muted-foreground/70">{group.label}</p>}
+              {group.items.map((item) => {
+                const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={onNavigate}
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "group flex items-center gap-2.5 rounded-md px-3 py-1.5 text-sm transition-colors",
+                      active
+                        ? "bg-accent font-medium text-accent-foreground shadow-[inset_2px_0_0_0_var(--primary)]"
+                        : "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
+                    )}
+                  >
+                    <item.icon className={cn("size-4 shrink-0", active ? "text-foreground" : "text-muted-foreground group-hover:text-foreground")} />
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
         </nav>
       </ScrollArea>
     </div>
@@ -125,67 +165,75 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      <aside className="hidden w-52 shrink-0 border-r bg-background md:block">
+      <aside className="hidden w-56 shrink-0 border-r bg-card md:block">
         <Sidebar />
       </aside>
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 md:hidden">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setSidebarOpen(false)} />
-          <div className="absolute inset-y-0 left-0 w-64 border-r bg-background">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" onClick={() => setSidebarOpen(false)} />
+          <div className="absolute inset-y-0 left-0 w-64 border-r bg-card shadow-xl">
             <Sidebar onNavigate={() => setSidebarOpen(false)} />
           </div>
         </div>
       )}
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-12 shrink-0 items-center gap-2 border-b px-4">
-          <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setSidebarOpen(true)}>
-            <svg className="size-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path d="M3 6h18M3 12h18M3 18h18" strokeLinecap="round" />
-            </svg>
+        <header className="flex h-14 shrink-0 items-center gap-3 border-b bg-card px-4">
+          <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setSidebarOpen(true)} aria-label="Open menu">
+            <Menu className="size-4" />
           </Button>
-          <Button variant="outline" size="sm" className="w-56 justify-start gap-2 text-muted-foreground" onClick={() => setSearchOpen(true)}>
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full max-w-xs justify-start gap-2 text-muted-foreground"
+            onClick={() => setSearchOpen(true)}
+          >
             <Search className="size-3.5" />
             Search…
-            <kbd className="pointer-events-none ml-auto rounded border bg-muted px-1 font-mono text-[10px]">Ctrl K</kbd>
+            <kbd className="pointer-events-none ml-auto rounded border bg-muted px-1.5 font-mono text-[10px] text-muted-foreground">⌘K</kbd>
           </Button>
           <div className="ml-auto flex items-center gap-1">
-            <Button variant="ghost" size="icon" className="relative" onClick={() => router.push("/notifications")} title="Notifications">
+            <Button variant="ghost" size="icon" className="relative" onClick={() => router.push("/notifications")} title="Notifications" aria-label="Notifications">
               <Bell className="size-4" />
               {unread > 0 && (
-                <span className="absolute right-1 top-1 flex size-4 items-center justify-center rounded-full bg-destructive text-[10px] text-white">
+                <span className="absolute right-1 top-1 flex min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-medium leading-4 text-white">
                   {unread > 9 ? "9+" : unread}
                 </span>
               )}
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="ml-1">
-                  <Avatar className="size-7">
-                    <AvatarFallback>{(me?.user?.name ?? "U").slice(0, 1).toUpperCase()}</AvatarFallback>
+                <Button variant="ghost" className="ml-1 h-9 gap-2 px-2">
+                  <Avatar className="size-6">
+                    <AvatarFallback className="text-xs">{(me?.user?.name ?? "U").slice(0, 1).toUpperCase()}</AvatarFallback>
                   </Avatar>
+                  <span className="hidden max-w-28 truncate text-sm font-medium lg:block">{me?.user?.name ?? "User"}</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>
                   <div className="text-sm font-medium">{me?.user?.name ?? "User"}</div>
-                  <div className="text-xs text-muted-foreground">{me?.user?.email}</div>
+                  <div className="truncate text-xs font-normal text-muted-foreground">{me?.user?.email}</div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={logout}>
-                  <LogOut className="mr-2 size-4" /> Logout
+                <DropdownMenuItem onClick={() => router.push("/settings")}>
+                  <Settings className="mr-2 size-4" /> Settings
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem variant="destructive" onClick={logout}>
+                  <LogOut className="mr-2 size-4" /> Log out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
         </header>
-        <main className="min-h-0 flex-1 overflow-y-auto p-6">{children}</main>
+        <main className="min-h-0 flex-1 overflow-y-auto">
+          <div className="mx-auto max-w-6xl px-4 py-6 lg:px-8">{children}</div>
+        </main>
       </div>
       <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
     </div>
   );
 }
-
-import { useQuery } from "@tanstack/react-query";
 
 function useQueryMe() {
   return useQuery({

@@ -4,48 +4,73 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #ffffff;
+  --background: #fafafa;
   --foreground: #171717;
   --card: #ffffff;
   --card-foreground: #171717;
   --popover: #ffffff;
   --popover-foreground: #171717;
-  --primary: #171717;
+  --primary: #18181b;
   --primary-foreground: #fafafa;
-  --secondary: #f5f5f5;
-  --secondary-foreground: #171717;
-  --muted: #f5f5f5;
-  --muted-foreground: #737373;
-  --accent: #f5f5f5;
-  --accent-foreground: #171717;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
   --destructive: #dc2626;
   --destructive-foreground: #fafafa;
-  --border: #e5e5e5;
-  --input: #e5e5e5;
-  --ring: #a3a3a3;
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #a1a1aa;
   --radius: 0.5rem;
+  /* semantic status colors — one source of truth, same everywhere */
+  --success: #059669;
+  --success-soft: #ecfdf5;
+  --success-foreground: #065f46;
+  --warning: #d97706;
+  --warning-soft: #fffbeb;
+  --warning-foreground: #92400e;
+  --danger: #dc2626;
+  --danger-soft: #fef2f2;
+  --danger-foreground: #991b1b;
+  --info: #0284c7;
+  --info-soft: #f0f9ff;
+  --info-foreground: #075985;
 }
 
 .dark {
   --background: #0a0a0a;
   --foreground: #ededed;
-  --card: #0a0a0a;
+  --card: #111113;
   --card-foreground: #ededed;
-  --popover: #0a0a0a;
+  --popover: #18181b;
   --popover-foreground: #ededed;
   --primary: #ededed;
-  --primary-foreground: #171717;
-  --secondary: #262626;
+  --primary-foreground: #18181b;
+  --secondary: #1f1f23;
   --secondary-foreground: #ededed;
-  --muted: #262626;
-  --muted-foreground: #a3a3a3;
-  --accent: #262626;
+  --muted: #1f1f23;
+  --muted-foreground: #a1a1aa;
+  --accent: #1f1f23;
   --accent-foreground: #ededed;
-  --destructive: #dc2626;
+  --destructive: #ef4444;
   --destructive-foreground: #fafafa;
-  --border: #262626;
-  --input: #262626;
-  --ring: #525252;
+  --border: #26262a;
+  --input: #26262a;
+  --ring: #52525b;
+  --success: #34d399;
+  --success-soft: #0a2e22;
+  --success-foreground: #6ee7b7;
+  --warning: #fbbf24;
+  --warning-soft: #2d2210;
+  --warning-foreground: #fcd34d;
+  --danger: #ef4444;
+  --danger-soft: #2f0e0e;
+  --danger-foreground: #fca5a5;
+  --info: #38bdf8;
+  --info-soft: #0c2438;
+  --info-foreground: #7dd3fc;
 }
 
 @theme inline {
@@ -68,9 +93,22 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-info-foreground: var(--info-foreground);
   --radius-sm: calc(var(--radius) - 2px);
   --radius-md: calc(var(--radius));
   --radius-lg: calc(var(--radius) + 2px);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 @layer base {
@@ -78,16 +116,44 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+  ::selection {
+    @apply bg-primary/90 text-primary-foreground;
+  }
+}
+
+/* consistent page rhythm */
+@layer components {
+  .page-title {
+    @apply text-xl font-semibold tracking-tight;
+  }
+  .page-sub {
+    @apply text-sm text-muted-foreground;
+  }
+  .section-title {
+    @apply text-sm font-semibold;
+  }
+  .meta-text {
+    @apply text-xs text-muted-foreground;
+  }
+  .tabular {
+    @apply tabular-nums;
   }
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--muted-foreground);
-  opacity: 0.3;
-  border-radius: 3px;
+  background: color-mix(in oklab, var(--muted-foreground) 30%, transparent);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--muted-foreground) 50%, transparent);
 }

@@ -92,7 +92,7 @@ export function FollowUpFormDialog({ trigger }: { trigger?: React.ReactNode }) {
               Cancel
             </Button>
             <Button type="submit" disabled={create.isPending}>
-              Schedule
+              {create.isPending ? "Saving…" : "Schedule"}
             </Button>
           </DialogFooter>
         </form>

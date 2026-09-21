@@ -4,9 +4,22 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useLeads, usePipeline, useUpdateLead } from "@/lib/hooks";
 import { LEAD_STATUSES, formatCurrency, type Lead } from "@/lib/types";
-import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PageHeader } from "@/components/page-header";
+import { StatusBadge } from "@/components/status-badge";
 import { cn } from "@/lib/utils";
+
+const STAGE_TONE: Record<string, string> = {
+  research: "text-muted-foreground",
+  qualified: "text-info",
+  contacted: "text-cyan-600 dark:text-cyan-400",
+  replied: "text-violet-600 dark:text-violet-400",
+  interested: "text-violet-600 dark:text-violet-400",
+  meeting: "text-violet-600 dark:text-violet-400",
+  proposal: "text-warning",
+  won: "text-success",
+  lost: "text-danger",
+};
 
 export default function PipelinePage() {
   const { data, isLoading } = usePipeline();
@@ -29,7 +42,12 @@ export default function PipelinePage() {
     if (dragId) {
       const lead = leads.find((l) => l.id === dragId);
       if (lead && lead.status !== status) {
-        updateLead.mutate({ id: dragId, status });
+        updateLead.mutate(
+          { id: dragId, status },
+          {
+            onError: (e) => console.error(e.message),
+          },
+        );
       }
     }
     setDragId(null);
@@ -38,61 +56,60 @@ export default function PipelinePage() {
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-2xl font-semibold">Pipeline</h1>
-        <p className="text-sm text-muted-foreground">Drag cards between columns to change stage</p>
-      </div>
+      <PageHeader title="Pipeline" subtitle="Drag cards between columns to change stage" />
 
-      <div className="flex gap-3 overflow-x-auto pb-4">
+      <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-4">
         {LEAD_STATUSES.map((status) => {
           const st = stats.find((s) => s.status === status);
+          const count = st?.count ?? byStatus[status]?.length ?? 0;
           return (
             <div
               key={status}
               className={cn(
-                "flex w-60 shrink-0 flex-col rounded-lg border bg-muted/30",
-                overCol === status && "ring-2 ring-primary/40",
+                "flex w-64 shrink-0 flex-col rounded-lg border bg-card transition-colors",
+                overCol === status && "border-primary/40 bg-accent/40",
               )}
               onDragOver={(e) => {
                 e.preventDefault();
                 setOverCol(status);
               }}
-              onDragLeave={() => setOverCol(null)}
+              onDragLeave={() => setOverCol((v) => (v === status ? null : v))}
               onDrop={() => onDrop(status)}
             >
-              <div className="border-b px-3 py-2">
+              <div className="border-b px-3 py-2.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium capitalize">{status}</span>
-                  <span className="text-xs text-muted-foreground">{st?.count ?? byStatus[status]?.length ?? 0}</span>
+                  <span className={cn("text-sm font-medium capitalize", STAGE_TONE[status])}>{status}</span>
+                  <span className="rounded-full bg-muted px-2 py-0.5 text-xs tabular-nums text-muted-foreground">{count}</span>
                 </div>
-                <span className="text-xs tabular-nums text-muted-foreground">{formatCurrency(st?.value ?? 0)}</span>
+                <span className="mt-0.5 block text-xs tabular-nums text-muted-foreground">{formatCurrency(st?.value ?? 0)}</span>
               </div>
-              <div className="flex-1 space-y-2 p-2">
+              <div className="flex min-h-24 flex-1 flex-col gap-2 p-2">
                 {isLoading && <Skeleton className="h-16" />}
                 {(byStatus[status] ?? []).map((lead) => (
-                  <Card
+                  <div
                     key={lead.id}
                     draggable
                     onDragStart={() => setDragId(lead.id)}
                     onDragEnd={() => setDragId(null)}
-                    className={cn("cursor-grab py-0 active:cursor-grabbing", dragId === lead.id && "opacity-50")}
+                    className={cn(
+                      "cursor-grab rounded-md border bg-card p-2.5 shadow-xs transition-all hover:border-border hover:shadow-sm active:cursor-grabbing active:shadow-sm",
+                      dragId === lead.id && "opacity-40 ring-2 ring-primary/30",
+                    )}
                   >
-                    <CardContent className="px-3 py-2.5">
-                      <Link href={`/leads/${lead.id}`} className="text-sm font-medium hover:underline">
-                        {lead.company?.name ?? lead.title}
-                      </Link>
-                      <p className="truncate text-xs text-muted-foreground">{lead.title}</p>
-                      <div className="mt-1.5 flex items-center justify-between text-xs">
-                        <span className="rounded bg-secondary px-1.5 py-0.5 font-medium capitalize">
-                          {lead.priority}
-                        </span>
-                        <span className="tabular-nums">{formatCurrency(lead.estimated_value)}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
+                    <Link href={`/leads/${lead.id}`} className="text-sm font-medium leading-snug hover:underline">
+                      {lead.company?.name ?? lead.title}
+                    </Link>
+                    {lead.company?.name && <p className="mt-0.5 truncate text-xs text-muted-foreground">{lead.title}</p>}
+                    <div className="mt-2 flex items-center justify-between gap-2">
+                      <StatusBadge status={lead.priority} />
+                      <span className="text-xs font-medium tabular-nums">{formatCurrency(lead.estimated_value)}</span>
+                    </div>
+                  </div>
                 ))}
                 {(byStatus[status] ?? []).length === 0 && !isLoading && (
-                  <p className="px-2 py-6 text-center text-xs text-muted-foreground">Empty</p>
+                  <p className="flex flex-1 items-center justify-center rounded-md border border-dashed py-6 text-center text-xs text-muted-foreground/70">
+                    Drop deals here
+                  </p>
                 )}
               </div>
             </div>

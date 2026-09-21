@@ -8,6 +8,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { PageHeader } from "@/components/page-header";
+import { EmptyState } from "@/components/empty-state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/status-badge";
@@ -15,6 +17,7 @@ import { RevenueFormDialog } from "@/components/revenue-form";
 import { useRevenue } from "@/lib/hooks";
 import { fmtDate } from "@/lib/date";
 import { formatCurrency } from "@/lib/types";
+import { CreditCard } from "lucide-react";
 
 export default function RevenuePage() {
   const { data, isLoading } = useRevenue({ per_page: 100 });
@@ -35,13 +38,7 @@ export default function RevenuePage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <h1 className="text-2xl font-semibold">Revenue</h1>
-          <p className="text-sm text-muted-foreground">Track money in</p>
-        </div>
-        <RevenueFormDialog />
-      </div>
+      <PageHeader title="Revenue" subtitle="Track money in" actions={<RevenueFormDialog />} />
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((c) => (
@@ -80,8 +77,8 @@ export default function RevenuePage() {
                   ))}
                 {!isLoading && rows.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={4} className="py-10 text-center text-muted-foreground">
-                      No revenue recorded yet
+                    <TableCell colSpan={4}>
+                      <EmptyState icon={<CreditCard className="size-4" />} title="No revenue recorded yet" description="Log your first payment — one-time or recurring." />
                     </TableCell>
                   </TableRow>
                 )}

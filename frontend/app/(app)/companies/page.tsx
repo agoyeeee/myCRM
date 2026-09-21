@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { PageHeader } from "@/components/page-header";
+import { EmptyState } from "@/components/empty-state";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -17,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CompanyFormDialog } from "@/components/company-form";
 import { useCompanies } from "@/lib/hooks";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Building2 } from "lucide-react";
 import { Pagination, PaginationContent, PaginationItem } from "@/components/ui/pagination";
 
 export default function CompaniesPage() {
@@ -30,13 +32,7 @@ export default function CompaniesPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <h1 className="text-2xl font-semibold">Companies</h1>
-          <p className="text-sm text-muted-foreground">{data?.meta?.total ?? 0} companies</p>
-        </div>
-        <CompanyFormDialog />
-      </div>
+      <PageHeader title="Companies" subtitle={`${data?.meta?.total ?? 0} companies`} actions={<CompanyFormDialog />} />
 
       <Input
         placeholder="Search companies…"
@@ -56,7 +52,7 @@ export default function CompaniesPage() {
                   <TableHead>Industry</TableHead>
                   <TableHead>Location</TableHead>
                   <TableHead>Website</TableHead>
-                  <TableHead />
+                  <TableHead className="text-right" />
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -70,8 +66,8 @@ export default function CompaniesPage() {
                   ))}
                 {!isLoading && rows.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">
-                      No companies yet. Create your first one.
+                    <TableCell colSpan={5}>
+                      <EmptyState icon={<Building2 className="size-4" />} title="No companies yet" description="Create your first company to start tracking deals." />
                     </TableCell>
                   </TableRow>
                 )}

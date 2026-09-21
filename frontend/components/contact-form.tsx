@@ -100,7 +100,7 @@ export function ContactFormDialog({ companyId, companyName, trigger }: Props) {
               Cancel
             </Button>
             <Button type="submit" disabled={create.isPending}>
-              Add Contact
+              {create.isPending ? "Saving…" : "Add Contact"}
             </Button>
           </DialogFooter>
         </form>

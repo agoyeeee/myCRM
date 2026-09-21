@@ -1,5 +1,7 @@
 "use client";
 
+import { PageHeader } from "@/components/page-header";
+import { EmptyState } from "@/components/empty-state";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -14,7 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/status-badge";
 import { useClients } from "@/lib/hooks";
 import { fmtDate } from "@/lib/date";
-import { Building2 } from "lucide-react";
+import { Building2, Contact } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
 import { useQueryClient } from "@tanstack/react-query";
@@ -36,10 +38,7 @@ export default function ClientsPage() {
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-2xl font-semibold">Clients</h1>
-        <p className="text-sm text-muted-foreground">{rows.length} clients</p>
-      </div>
+      <PageHeader title="Clients" subtitle="{rows.length} clients" />
       <Card>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
@@ -62,8 +61,8 @@ export default function ClientsPage() {
                   ))}
                 {!isLoading && rows.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={3} className="py-10 text-center text-muted-foreground">
-                      No clients yet. Convert a won lead from its detail page.
+                    <TableCell colSpan={3}>
+                      <EmptyState icon={<Contact className="size-4" />} title="No clients yet" description="Convert a won lead from its detail page to see clients here." />
                     </TableCell>
                   </TableRow>
                 )}

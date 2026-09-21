@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { PageHeader } from "@/components/page-header";
+import { EmptyState } from "@/components/empty-state";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -21,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Contact } from "lucide-react";
 
 export default function ContactsPage() {
   const [companyId, setCompanyId] = useState("");
@@ -31,18 +34,12 @@ export default function ContactsPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <h1 className="text-2xl font-semibold">Contacts</h1>
-          <p className="text-sm text-muted-foreground">{rows.length} contacts</p>
-        </div>
-        <ContactFormDialog
+      <PageHeader title="Contacts" subtitle="{rows.length} contacts" actions={<ContactFormDialog
           companyId={companyId}
           trigger={companyId ? undefined : (
             <span className="hidden" />
           )}
-        />
-      </div>
+        />} />
 
       <div className="flex flex-wrap items-center gap-2">
         <Select value={companyId} onValueChange={setCompanyId}>
@@ -87,8 +84,8 @@ export default function ContactsPage() {
                   ))}
                 {!contacts.isLoading && rows.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">
-                      No contacts yet. Add one from a company detail page.
+                    <TableCell colSpan={5}>
+                      <EmptyState icon={<Contact className="size-4" />} title="No contacts yet" description="Add a contact from a company page, or create one directly here." />
                     </TableCell>
                   </TableRow>
                 )}

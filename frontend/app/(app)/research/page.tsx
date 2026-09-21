@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/status-badge";
@@ -40,13 +41,7 @@ export default function ResearchPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <h1 className="text-2xl font-semibold">Research Center</h1>
-          <p className="text-sm text-muted-foreground">Collect prospect intel before it becomes a lead</p>
-        </div>
-        <ResearchFormDialog />
-      </div>
+      <PageHeader title="Research Center" subtitle="Collect prospect intel before it becomes a lead" actions={<ResearchFormDialog />} />
 
       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
         {isLoading && Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-40" />)}

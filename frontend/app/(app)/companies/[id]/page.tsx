@@ -3,6 +3,7 @@
 import { use } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { ContactFormDialog } from "@/components/contact-form";
@@ -10,7 +11,9 @@ import { LeadFormDialog } from "@/components/lead-form";
 import { useActivities, useCompany, useContacts, useLeads } from "@/lib/hooks";
 import { fmtDate, fmtDateTime } from "@/lib/date";
 import { formatCurrency } from "@/lib/types";
-import { Globe, MapPin, Briefcase } from "lucide-react";
+import { Globe, MapPin, Briefcase, Contact, LayoutList, Mail } from "lucide-react";
+import { Breadcrumb } from "@/components/page-header";
+import { EmptyState } from "@/components/empty-state";
 
 export default function CompanyDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -31,14 +34,8 @@ export default function CompanyDetailPage({ params }: { params: Promise<{ id: st
   return (
     <div className="mx-auto max-w-5xl space-y-4">
       <div>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Link href="/companies" className="hover:underline">
-            Companies
-          </Link>
-          <span>/</span>
-          <span>{company.name}</span>
-        </div>
-        <h1 className="text-2xl font-semibold">{company.name}</h1>
+        <Breadcrumb items={[{ label: "Companies", href: "/companies" }, { label: company.name }]} />
+        <h1 className="mt-0.5 text-xl font-semibold tracking-tight">{company.name}</h1>
         <div className="mt-1 flex flex-wrap gap-4 text-sm text-muted-foreground">
           {company.website && (
             <span className="flex items-center gap-1">
@@ -65,7 +62,9 @@ export default function CompanyDetailPage({ params }: { params: Promise<{ id: st
             <ContactFormDialog companyId={id} companyName={company.name} />
           </CardHeader>
           <CardContent className="space-y-2">
-            {(contacts?.data ?? []).length === 0 && <p className="text-sm text-muted-foreground">No contacts yet</p>}
+            {(contacts?.data ?? []).length === 0 && (
+              <EmptyState icon={<Contact className="size-4" />} title="No contacts yet" description="Add a contact to track who you talk to at this company." />
+            )}
             {(contacts?.data ?? []).map((c) => (
               <div key={c.id} className="rounded-md border p-3 text-sm">
                 <div className="font-medium">{c.name}</div>
@@ -82,10 +81,12 @@ export default function CompanyDetailPage({ params }: { params: Promise<{ id: st
         <Card>
           <CardHeader className="flex-row items-center justify-between pb-2">
             <CardTitle className="text-base">Leads</CardTitle>
-            <LeadFormDialog defaultCompanyId={id} trigger={<span className="cursor-pointer text-sm underline">New lead</span>} />
+            <LeadFormDialog defaultCompanyId={id} trigger={<Button variant="outline" size="sm">New lead</Button>} />
           </CardHeader>
           <CardContent className="space-y-2">
-            {(leads?.data ?? []).length === 0 && <p className="text-sm text-muted-foreground">No leads yet</p>}
+            {(leads?.data ?? []).length === 0 && (
+              <EmptyState icon={<LayoutList className="size-4" />} title="No leads yet" description="Create a lead to start pursuing this company." />
+            )}
             {(leads?.data ?? []).map((l) => (
               <Link
                 key={l.id}
@@ -108,7 +109,9 @@ export default function CompanyDetailPage({ params }: { params: Promise<{ id: st
           <CardTitle className="text-base">Recent Activities</CardTitle>
         </CardHeader>
         <CardContent>
-          {(activities?.data ?? []).length === 0 && <p className="text-sm text-muted-foreground">No activities</p>}
+          {(activities?.data ?? []).length === 0 && (
+            <EmptyState icon={<Mail className="size-4" />} title="No activities" description="Activity from this company's leads will appear here." />
+          )}
           <div className="space-y-2">
             {(activities?.data ?? []).map((a) => (
               <div key={a.id} className="flex items-start gap-3 text-sm">

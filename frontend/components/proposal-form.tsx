@@ -107,7 +107,7 @@ export function ProposalFormDialog({ trigger }: { trigger?: React.ReactNode }) {
               Cancel
             </Button>
             <Button type="submit" disabled={create.isPending}>
-              Create Draft
+              {create.isPending ? "Saving…" : "Create Draft"}
             </Button>
           </DialogFooter>
         </form>

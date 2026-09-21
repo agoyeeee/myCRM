@@ -1,5 +1,6 @@
 "use client";
 
+import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -40,19 +41,19 @@ export default function TemplatesPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">Outreach Templates</h1>
-          <p className="text-sm text-muted-foreground">
+      <PageHeader
+        title="Outreach Templates"
+        subtitle={
+          <>
             Variables: <code className="rounded bg-muted px-1">{"{{company_name}}"}</code>{" "}
             <code className="rounded bg-muted px-1">{"{{contact_name}}"}</code>{" "}
             <code className="rounded bg-muted px-1">{"{{service}}"}</code>{" "}
             <code className="rounded bg-muted px-1">{"{{problem}}"}</code>{" "}
             <code className="rounded bg-muted px-1">{"{{name}}"}</code>
-          </p>
-        </div>
-        <TemplateFormDialog />
-      </div>
+          </>
+        }
+        actions={<TemplateFormDialog />}
+      />
 
       <div className="grid gap-3 md:grid-cols-2">
         {isLoading && Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-36" />)}

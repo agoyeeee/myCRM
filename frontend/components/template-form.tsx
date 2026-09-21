@@ -95,7 +95,7 @@ export function TemplateFormDialog({ trigger }: { trigger?: React.ReactNode }) {
               Cancel
             </Button>
             <Button type="submit" disabled={save.isPending}>
-              Save
+              {save.isPending ? "Saving…" : "Save"}
             </Button>
           </DialogFooter>
         </form>

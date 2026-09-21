@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { useState } from "react";
+import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -44,10 +45,7 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-xl space-y-4">
-      <div>
-        <h1 className="text-2xl font-semibold">Settings</h1>
-        <p className="text-sm text-muted-foreground">Profile and preferences</p>
-      </div>
+      <PageHeader title="Settings" subtitle="Profile and preferences" />
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-base">Profile</CardTitle>

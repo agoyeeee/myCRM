@@ -1,5 +1,6 @@
 "use client";
 
+import { PageHeader } from "@/components/page-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -15,10 +16,7 @@ export default function NotificationsPage() {
 
   return (
     <div className="mx-auto max-w-xl space-y-4">
-      <div>
-        <h1 className="text-2xl font-semibold">Notifications</h1>
-        <p className="text-sm text-muted-foreground">Due follow-ups, billing reminders, expiring proposals</p>
-      </div>
+      <PageHeader title="Notifications" subtitle="Due follow-ups, billing reminders, expiring proposals" />
       <Card>
         <CardContent className="p-0">
           {isLoading && <div className="space-y-2 p-4">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-12" />)}</div>}

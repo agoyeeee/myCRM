@@ -8,9 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FollowUpFormDialog } from "@/components/followup-form";
+import { PageHeader } from "@/components/page-header";
+import { EmptyState } from "@/components/empty-state";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useFollowUps, useUpdateFollowUp } from "@/lib/hooks";
 import { fmtDate } from "@/lib/date";
 import { statusLabel } from "@/lib/types";
+import { Inbox } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -43,34 +47,29 @@ export default function FollowUpsPage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <h1 className="text-2xl font-semibold">Follow-ups</h1>
-          <p className="text-sm text-muted-foreground">Stay on top of every deal</p>
-        </div>
-        <FollowUpFormDialog />
-      </div>
+      <PageHeader title="Follow-ups" subtitle="Stay on top of every deal" actions={<FollowUpFormDialog />} />
 
-      <div className="flex gap-1">
-        {tabs.map((t) => (
-          <Button
-            key={t.key}
-            variant={tab === t.key ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setTab(t.key)}
-          >
-            {t.label}
-          </Button>
-        ))}
-      </div>
+      <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)}>
+        <TabsList>
+          {tabs.map((t) => (
+            <TabsTrigger key={t.key} value={t.key}>
+              {t.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
 
       <Card>
         <CardContent className="p-0">
           {isLoading && <div className="space-y-2 p-4">{Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-10" />)}</div>}
           {!isLoading && rows.length === 0 && (
-            <p className="p-10 text-center text-sm text-muted-foreground">
-              Nothing {tab === "all" ? "here" : tab} — good or empty?
-            </p>
+            <EmptyState
+              icon={<Inbox className="size-4" />}
+              title={tab === "overdue" ? "Nothing overdue" : tab === "today" ? "No follow-ups due today" : "No follow-ups"}
+              description={tab === "overdue" ? "You're all caught up." : "Schedule one from any lead page, or create one here."}
+              className="py-10"
+              action={<FollowUpFormDialog />}
+            />
           )}
           <div>
             {rows.map((f) => (

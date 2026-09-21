@@ -116,7 +116,7 @@ export function RevenueFormDialog({ trigger }: { trigger?: React.ReactNode }) {
               Cancel
             </Button>
             <Button type="submit" disabled={create.isPending}>
-              Record
+              {create.isPending ? "Saving…" : "Record"}
             </Button>
           </DialogFooter>
         </form>

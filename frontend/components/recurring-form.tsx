@@ -122,7 +122,7 @@ export function RecurringFormDialog({ trigger }: { trigger?: React.ReactNode }) 
               Cancel
             </Button>
             <Button type="submit" disabled={create.isPending}>
-              Create
+              {create.isPending ? "Saving…" : "Create"}
             </Button>
           </DialogFooter>
         </form>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { PageHeader } from "@/components/page-header";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -71,13 +72,7 @@ export default function LeadsPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <h1 className="text-2xl font-semibold">Leads</h1>
-          <p className="text-sm text-muted-foreground">{data?.meta?.total ?? 0} leads</p>
-        </div>
-        <LeadFormDialog />
-      </div>
+      <PageHeader title="Leads" subtitle={`${data?.meta?.total ?? 0} leads`} actions={<LeadFormDialog />} />
 
       <div className="flex flex-wrap items-center gap-2">
         <Input
@@ -128,7 +123,7 @@ export default function LeadsPage() {
                   <TableHead>Value</TableHead>
                   <TableHead>Next Follow-up</TableHead>
                   <TableHead>Created</TableHead>
-                  <TableHead />
+                  <TableHead className="text-right" />
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -142,7 +137,7 @@ export default function LeadsPage() {
                   ))}
                 {!isLoading && rows.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={7} className="py-10 text-center text-muted-foreground">
+                    <TableCell colSpan={7} className="py-10 text-center text-sm text-muted-foreground">
                       No leads found. <Link href="/research" className="underline">Start with research</Link> or create your first
                       lead.
                     </TableCell>

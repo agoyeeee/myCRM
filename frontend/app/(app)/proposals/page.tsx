@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { PageHeader } from "@/components/page-header";
+import { EmptyState } from "@/components/empty-state";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -16,6 +18,7 @@ import { ProposalFormDialog } from "@/components/proposal-form";
 import { useProposals } from "@/lib/sales-hooks";
 import { fmtDate } from "@/lib/date";
 import { formatCurrency } from "@/lib/types";
+import { ScrollText } from "lucide-react";
 
 export default function ProposalsPage() {
   const { data, isLoading } = useProposals();
@@ -24,10 +27,7 @@ export default function ProposalsPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">Proposals</h1>
-          <p className="text-sm text-muted-foreground">{rows.length} proposals</p>
-        </div>
+        <PageHeader title="Proposals" subtitle="{rows.length} proposals" />
         <ProposalFormDialog />
       </div>
 
@@ -55,8 +55,8 @@ export default function ProposalsPage() {
                   ))}
                 {!isLoading && rows.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">
-                      No proposals yet
+                    <TableCell colSpan={5}>
+                      <EmptyState icon={<ScrollText className="size-4" />} title="No proposals yet" description="Create a proposal to move a deal closer to a signature." />
                     </TableCell>
                   </TableRow>
                 )}

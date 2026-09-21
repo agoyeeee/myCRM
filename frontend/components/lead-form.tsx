@@ -268,7 +268,7 @@ export function LeadFormDialog(props: Props) {
               Cancel
             </Button>
             <Button type="submit" disabled={createLead.isPending}>
-              Create Lead
+              {createLead.isPending ? "Saving…" : "Create Lead"}
             </Button>
           </DialogFooter>
         </form>

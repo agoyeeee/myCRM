@@ -13,6 +13,8 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import { StatusBadge } from "@/components/status-badge";
+import { Breadcrumb } from "@/components/page-header";
+import { EmptyState } from "@/components/empty-state";
 import { LeadActivityComposer } from "@/components/activity-composer";
 import { FollowUpComposer } from "@/components/followup-composer";
 import { LeadAnalysisCard } from "@/components/ai-analysis";
@@ -20,7 +22,7 @@ import { useActivities, useAnalyzeLead, useConvertLead, useLead, useUpdateLead }
 import { api } from "@/lib/api";
 import { LEAD_STATUSES, PRIORITIES, formatCurrency } from "@/lib/types";
 import { fmtDateTime } from "@/lib/date";
-import { ArrowRight, Building2, Sparkles, Trash2, UserRound } from "lucide-react";
+import { ArrowRight, Building2, Mail, Sparkles, Trash2, UserRound } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -68,14 +70,8 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
     <div className="mx-auto max-w-4xl space-y-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Link href="/leads" className="hover:underline">
-              Leads
-            </Link>
-            <span>/</span>
-            <span>{lead.company?.name ?? "Lead"}</span>
-          </div>
-          <h1 className="text-2xl font-semibold">{lead.title}</h1>
+          <Breadcrumb items={[{ label: "Leads", href: "/leads" }, { label: lead.company?.name ?? "Lead" }]} />
+          <h1 className="mt-0.5 text-xl font-semibold tracking-tight">{lead.title}</h1>
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -175,7 +171,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                 <p className="whitespace-pre-wrap text-muted-foreground">{lead.notes}</p>
               </>
             )}
-            <Button variant="ghost" size="sm" className="text-destructive" onClick={onDelete}>
+            <Button variant="outline" size="sm" className="mt-2 text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={onDelete}>
               <Trash2 className="mr-2 size-4" /> Delete
             </Button>
           </CardContent>
@@ -206,7 +202,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
             <CardContent>
               {actsLoading && <Skeleton className="h-20 w-full" />}
               {!actsLoading && (activities?.data ?? []).length === 0 && (
-                <p className="text-sm text-muted-foreground">No activity yet</p>
+                <EmptyState icon={<Mail className="size-4" />} title="No activity yet" description="Log your first call, email or note above." />
               )}
               <div className="space-y-0">
                 {(activities?.data ?? []).map((a, i, arr) => (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
+import { PageHeader } from "@/components/page-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/status-badge";
@@ -25,10 +26,7 @@ export default function ActivitiesPage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">
-      <div>
-        <h1 className="text-2xl font-semibold">Activities</h1>
-        <p className="text-sm text-muted-foreground">All recorded communication</p>
-      </div>
+      <PageHeader title="Activities" subtitle="All recorded communication" />
       <Card>
         <CardContent className="p-0">
           {isLoading && <div className="space-y-2 p-4">{Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-10" />)}</div>}

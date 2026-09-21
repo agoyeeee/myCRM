@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/status-badge";
@@ -16,10 +17,7 @@ export default function ProjectsPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">Projects</h1>
-          <p className="text-sm text-muted-foreground">{rows.length} projects</p>
-        </div>
+        <PageHeader title="Projects" subtitle="{rows.length} projects" />
         <ProjectFormDialog />
       </div>
       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">

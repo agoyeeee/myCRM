@@ -39,10 +39,18 @@ export function AuthForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-xl">{mode === "login" ? "Sign in to ClientOS" : "Create your account"}</CardTitle>
+    <div className="flex min-h-screen items-center justify-center bg-muted/40 p-4">
+      <Card className="w-full max-w-sm py-2 shadow-sm">
+        <CardHeader className="pb-2">
+          <div className="mx-auto mb-1 flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <span className="text-sm font-bold">C</span>
+          </div>
+          <CardTitle className="text-center text-lg">
+            {mode === "login" ? "Sign in to ClientOS" : "Create your account"}
+          </CardTitle>
+          <p className="text-center text-sm text-muted-foreground">
+            {mode === "login" ? "Your personal CRM and sales workspace" : "Start organizing your pipeline in minutes"}
+          </p>
         </CardHeader>
         <CardContent>
           <form onSubmit={onSubmit} className="space-y-4">
@@ -70,6 +78,9 @@ export function AuthForm() {
             <Button type="submit" className="w-full" disabled={busy}>
               {busy ? "Please wait…" : mode === "login" ? "Sign in" : "Create account"}
             </Button>
+            <p className="text-center text-xs text-muted-foreground">
+              Protected by email & password. Sessions expire automatically.
+            </p>
             <Button
               type="button"
               variant="link"

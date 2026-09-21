@@ -159,7 +159,7 @@ export function ResearchFormDialog({ trigger }: { trigger?: React.ReactNode }) {
               Cancel
             </Button>
             <Button type="submit" disabled={create.isPending}>
-              Save
+              {create.isPending ? "Saving…" : "Save"}
             </Button>
           </div>
         </form>

@@ -1,5 +1,7 @@
 "use client";
 
+import { PageHeader } from "@/components/page-header";
+import { EmptyState } from "@/components/empty-state";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -15,6 +17,7 @@ import { RecurringFormDialog } from "@/components/recurring-form";
 import { useRecurring } from "@/lib/hooks";
 import { fmtDate } from "@/lib/date";
 import { formatCurrency } from "@/lib/types";
+import { Repeat } from "lucide-react";
 
 export default function RecurringPage() {
   const { data, isLoading } = useRecurring({ per_page: 100 });
@@ -25,15 +28,15 @@ export default function RecurringPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <h1 className="text-2xl font-semibold">Recurring Services</h1>
-          <p className="text-sm text-muted-foreground">
-            Estimated MRR: <span className="font-medium text-foreground tabular-nums">{formatCurrency(Math.round(mrr))}</span>
-          </p>
-        </div>
-        <RecurringFormDialog />
-      </div>
+      <PageHeader
+        title="Recurring Services"
+        subtitle={
+          <>
+            Estimated MRR: <span className="font-medium tabular-nums text-foreground">{formatCurrency(Math.round(mrr))}</span>
+          </>
+        }
+        actions={<RecurringFormDialog />}
+      />
       <Card>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
@@ -58,8 +61,8 @@ export default function RecurringPage() {
                   ))}
                 {!isLoading && rows.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">
-                      No recurring services yet
+                    <TableCell colSpan={5}>
+                      <EmptyState icon={<Repeat className="size-4" />} title="No recurring services yet" description="Add a service with a billing cycle to start tracking MRR." />
                     </TableCell>
                   </TableRow>
                 )}
