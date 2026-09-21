@@ -112,5 +112,6 @@ export async function api<T>(path: string, req: Req = {}): Promise<T> {
     throw new ApiError(res.status, code, message);
   }
   if (res.status === 204) return undefined as T;
-  return (await res.json()) as T;
+  const body = (await res.json()) as { data?: T };
+  return (body.data ?? body) as T;
 }
