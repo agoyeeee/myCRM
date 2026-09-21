@@ -63,7 +63,7 @@ export function StatusBadge({ status, className }: { status: string | null | und
     <Badge
       variant="outline"
       className={cn(
-        "gap-1 rounded-full border-transparent px-2 py-0.5 text-[11px] font-medium capitalize ring-1 ring-inset",
+        "gap-1 rounded-full border-transparent px-2.5 py-1 text-xs font-medium capitalize ring-1 ring-inset",
         TONES[tone],
         className,
       )}

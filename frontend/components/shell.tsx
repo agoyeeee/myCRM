@@ -91,7 +91,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   return (
     <div className="flex h-full flex-col">
-      <div className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
+      <div className="flex h-16 shrink-0 items-center gap-2 border-b px-5">
         <Link href="/" className="flex items-center gap-2 text-sm font-semibold tracking-tight" onClick={onNavigate}>
           <span className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground text-xs font-bold">
             C
@@ -113,7 +113,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                     onClick={onNavigate}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "group flex items-center gap-2.5 rounded-md px-3 py-1.5 text-sm transition-colors",
+                      "group flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-colors",
                       active
                         ? "bg-accent font-medium text-accent-foreground shadow-[inset_2px_0_0_0_var(--primary)]"
                         : "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
@@ -165,19 +165,19 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      <aside className="hidden w-56 shrink-0 border-r bg-card md:block">
+      <aside className="hidden w-64 shrink-0 border-r bg-card md:block">
         <Sidebar />
       </aside>
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 md:hidden">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" onClick={() => setSidebarOpen(false)} />
-          <div className="absolute inset-y-0 left-0 w-64 border-r bg-card shadow-xl">
+          <div className="absolute inset-y-0 left-0 w-72 border-r bg-card shadow-xl">
             <Sidebar onNavigate={() => setSidebarOpen(false)} />
           </div>
         </div>
       )}
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-14 shrink-0 items-center gap-3 border-b bg-card px-4">
+        <header className="flex h-16 shrink-0 items-center gap-3 border-b bg-card px-5">
           <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setSidebarOpen(true)} aria-label="Open menu">
             <Menu className="size-4" />
           </Button>
@@ -227,7 +227,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
           </div>
         </header>
         <main className="min-h-0 flex-1 overflow-y-auto">
-          <div className="mx-auto max-w-6xl px-4 py-6 lg:px-8">{children}</div>
+          <div className="mx-auto max-w-7xl px-6 py-8 lg:px-10">{children}</div>
         </main>
       </div>
       <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />

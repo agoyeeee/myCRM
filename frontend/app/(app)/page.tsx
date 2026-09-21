@@ -73,7 +73,7 @@ export default function DashboardPage() {
               <CardContent className="flex items-start justify-between px-4 py-4">
                 <div className="min-w-0">
                   <p className="text-xs text-muted-foreground">{k.label}</p>
-                  <p className={cn("mt-1 truncate text-xl font-semibold tabular-nums tracking-tight", k.danger && "text-destructive")}>
+                  <p className={cn("mt-1.5 truncate text-2xl font-semibold tabular-nums tracking-tight", k.danger && "text-destructive")}>
                     {k.value}
                   </p>
                   {k.hint && <p className={cn("mt-0.5 text-xs", k.danger ? "text-destructive" : "text-muted-foreground")}>{k.hint}</p>}

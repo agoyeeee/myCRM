@@ -127,7 +127,7 @@
 /* consistent page rhythm */
 @layer components {
   .page-title {
-    @apply text-xl font-semibold tracking-tight;
+    @apply text-2xl font-semibold tracking-tight;
   }
   .page-sub {
     @apply text-sm text-muted-foreground;
