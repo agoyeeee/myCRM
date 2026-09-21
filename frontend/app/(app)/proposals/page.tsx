@@ -2,6 +2,14 @@
 
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/status-badge";
 import { ProposalFormDialog } from "@/components/proposal-form";
@@ -26,35 +34,35 @@ export default function ProposalsPage() {
       <Card>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b text-left text-xs text-muted-foreground">
-                  <th className="px-4 py-3">Title</th>
-                  <th className="px-4 py-3">Amount</th>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3">Sent</th>
-                  <th className="px-4 py-3">Valid Until</th>
-                </tr>
-              </thead>
-              <tbody>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Title</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Sent</TableHead>
+                  <TableHead>Valid Until</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {isLoading &&
                   Array.from({ length: 4 }).map((_, i) => (
-                    <tr key={i}>
-                      <td colSpan={5} className="px-4 py-3">
+                    <TableRow key={i}>
+                      <TableCell colSpan={5} className="py-3">
                         <Skeleton className="h-5 w-full" />
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
                 {!isLoading && rows.length === 0 && (
-                  <tr>
-                    <td colSpan={5} className="px-4 py-10 text-center text-muted-foreground">
+                  <TableRow>
+                    <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">
                       No proposals yet
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 )}
                 {rows.map((p) => (
-                  <tr key={p.id} className="border-b last:border-0 hover:bg-secondary/30">
-                    <td className="px-4 py-3">
+                  <TableRow key={p.id}>
+                    <TableCell>
                       <span className="font-medium">{p.title}</span>
                       {p.company_id && (
                         <Link href={`/companies/${p.company_id}`} className="ml-2 text-xs text-muted-foreground hover:underline">
@@ -64,17 +72,17 @@ export default function ProposalsPage() {
                       <Link href={`/leads/${p.lead_id}`} className="ml-2 text-xs text-muted-foreground hover:underline">
                         lead
                       </Link>
-                    </td>
-                    <td className="px-4 py-3 tabular-nums">{formatCurrency(p.amount)}</td>
-                    <td className="px-4 py-3">
+                    </TableCell>
+                    <TableCell className="tabular-nums">{formatCurrency(p.amount)}</TableCell>
+                    <TableCell>
                       <StatusBadge status={p.status} />
-                    </td>
-                    <td className="px-4 py-3 text-muted-foreground">{fmtDate(p.sent_at)}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{fmtDate(p.valid_until)}</td>
-                  </tr>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">{fmtDate(p.sent_at)}</TableCell>
+                    <TableCell className="text-muted-foreground">{fmtDate(p.valid_until)}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </CardContent>
       </Card>

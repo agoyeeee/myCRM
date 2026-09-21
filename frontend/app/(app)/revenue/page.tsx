@@ -1,5 +1,13 @@
 "use client";
 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/status-badge";
@@ -52,43 +60,43 @@ export default function RevenuePage() {
         </CardHeader>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b text-left text-xs text-muted-foreground">
-                  <th className="px-4 py-3">Date</th>
-                  <th className="px-4 py-3">Amount</th>
-                  <th className="px-4 py-3">Type</th>
-                  <th className="px-4 py-3">Notes</th>
-                </tr>
-              </thead>
-              <tbody>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Notes</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {isLoading &&
                   Array.from({ length: 3 }).map((_, i) => (
-                    <tr key={i}>
-                      <td colSpan={4} className="px-4 py-3">
+                    <TableRow key={i}>
+                      <TableCell colSpan={4} className="py-3">
                         <Skeleton className="h-5 w-full" />
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
                 {!isLoading && rows.length === 0 && (
-                  <tr>
-                    <td colSpan={4} className="px-4 py-10 text-center text-muted-foreground">
+                  <TableRow>
+                    <TableCell colSpan={4} className="py-10 text-center text-muted-foreground">
                       No revenue recorded yet
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 )}
                 {rows.map((r) => (
-                  <tr key={r.id} className="border-b last:border-0 hover:bg-secondary/30">
-                    <td className="px-4 py-3">{fmtDate(r.occurred_at)}</td>
-                    <td className="px-4 py-3 font-medium tabular-nums">{formatCurrency(r.amount)}</td>
-                    <td className="px-4 py-3">
+                  <TableRow key={r.id}>
+                    <TableCell>{fmtDate(r.occurred_at)}</TableCell>
+                    <TableCell className="font-medium tabular-nums">{formatCurrency(r.amount)}</TableCell>
+                    <TableCell>
                       <StatusBadge status={r.type} />
-                    </td>
-                    <td className="px-4 py-3 text-muted-foreground">{r.notes ?? "–"}</td>
-                  </tr>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">{r.notes ?? "–"}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </CardContent>
       </Card>

@@ -1,6 +1,14 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/status-badge";
 import { RecurringFormDialog } from "@/components/recurring-form";
@@ -29,45 +37,45 @@ export default function RecurringPage() {
       <Card>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b text-left text-xs text-muted-foreground">
-                  <th className="px-4 py-3">Service</th>
-                  <th className="px-4 py-3">Amount</th>
-                  <th className="px-4 py-3">Cycle</th>
-                  <th className="px-4 py-3">Next Billing</th>
-                  <th className="px-4 py-3">Status</th>
-                </tr>
-              </thead>
-              <tbody>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Service</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Cycle</TableHead>
+                  <TableHead>Next Billing</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {isLoading &&
                   Array.from({ length: 3 }).map((_, i) => (
-                    <tr key={i}>
-                      <td colSpan={5} className="px-4 py-3">
+                    <TableRow key={i}>
+                      <TableCell colSpan={5} className="py-3">
                         <Skeleton className="h-5 w-full" />
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
                 {!isLoading && rows.length === 0 && (
-                  <tr>
-                    <td colSpan={5} className="px-4 py-10 text-center text-muted-foreground">
+                  <TableRow>
+                    <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">
                       No recurring services yet
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 )}
                 {rows.map((r) => (
-                  <tr key={r.id} className="border-b last:border-0 hover:bg-secondary/30">
-                    <td className="px-4 py-3 font-medium">{r.name}</td>
-                    <td className="px-4 py-3 tabular-nums">{formatCurrency(r.amount)}</td>
-                    <td className="px-4 py-3 capitalize text-muted-foreground">{r.billing_cycle}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{fmtDate(r.next_billing_date)}</td>
-                    <td className="px-4 py-3">
+                  <TableRow key={r.id}>
+                    <TableCell className="font-medium">{r.name}</TableCell>
+                    <TableCell className="tabular-nums">{formatCurrency(r.amount)}</TableCell>
+                    <TableCell className="capitalize text-muted-foreground">{r.billing_cycle}</TableCell>
+                    <TableCell className="text-muted-foreground">{fmtDate(r.next_billing_date)}</TableCell>
+                    <TableCell>
                       <StatusBadge status={r.status} />
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </CardContent>
       </Card>

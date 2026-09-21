@@ -4,6 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -20,6 +28,7 @@ import { useLeads, useUpdateLead } from "@/lib/hooks";
 import { LEAD_STATUSES, PRIORITIES, formatCurrency } from "@/lib/types";
 import { fmtDate } from "@/lib/date";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Pagination, PaginationContent, PaginationItem } from "@/components/ui/pagination";
 import { toast } from "sonner";
 
 export default function LeadsPage() {
@@ -110,46 +119,46 @@ export default function LeadsPage() {
       <Card>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b text-left text-xs text-muted-foreground">
-                  <th className="px-4 py-3">Company / Title</th>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3">Priority</th>
-                  <th className="px-4 py-3">Value</th>
-                  <th className="px-4 py-3">Next Follow-up</th>
-                  <th className="px-4 py-3">Created</th>
-                  <th className="px-4 py-3" />
-                </tr>
-              </thead>
-              <tbody>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Company / Title</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Priority</TableHead>
+                  <TableHead>Value</TableHead>
+                  <TableHead>Next Follow-up</TableHead>
+                  <TableHead>Created</TableHead>
+                  <TableHead />
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {isLoading &&
                   Array.from({ length: 5 }).map((_, i) => (
-                    <tr key={i}>
-                      <td colSpan={7} className="px-4 py-3">
+                    <TableRow key={i}>
+                      <TableCell colSpan={7} className="py-3">
                         <Skeleton className="h-5 w-full" />
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
                 {!isLoading && rows.length === 0 && (
-                  <tr>
-                    <td colSpan={7} className="px-4 py-10 text-center text-muted-foreground">
+                  <TableRow>
+                    <TableCell colSpan={7} className="py-10 text-center text-muted-foreground">
                       No leads found. <Link href="/research" className="underline">Start with research</Link> or create your first
                       lead.
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 )}
                 {rows.map((lead) => (
-                  <tr key={lead.id} className="border-b last:border-0 hover:bg-secondary/30">
-                    <td className="px-4 py-3">
+                  <TableRow key={lead.id}>
+                    <TableCell>
                       <Link href={`/leads/${lead.id}`} className="font-medium hover:underline">
                         {lead.company?.name ?? lead.title}
                       </Link>
                       {lead.company?.name && (
                         <div className="text-xs text-muted-foreground">{lead.title}</div>
                       )}
-                    </td>
-                    <td className="px-4 py-3">
+                    </TableCell>
+                    <TableCell>
                       <Select value={lead.status} onValueChange={(v) => changeStatus(lead.id, v)}>
                         <SelectTrigger className="h-7 w-fit gap-1 border-0 bg-transparent p-1 shadow-none hover:bg-secondary">
                           <StatusBadge status={lead.status} />
@@ -162,43 +171,51 @@ export default function LeadsPage() {
                           ))}
                         </SelectContent>
                       </Select>
-                    </td>
-                    <td className="px-4 py-3">
+                    </TableCell>
+                    <TableCell>
                       <StatusBadge status={lead.priority} />
-                    </td>
-                    <td className="px-4 py-3 tabular-nums">{formatCurrency(lead.estimated_value)}</td>
-                    <td className="px-4 py-3">{fmtDate(lead.next_follow_up)}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{fmtDate(lead.created_at)}</td>
-                    <td className="px-4 py-3 text-right">
+                    </TableCell>
+                    <TableCell className="tabular-nums">{formatCurrency(lead.estimated_value)}</TableCell>
+                    <TableCell>{fmtDate(lead.next_follow_up)}</TableCell>
+                    <TableCell className="text-muted-foreground">{fmtDate(lead.created_at)}</TableCell>
+                    <TableCell className="text-right">
                       <Button variant="ghost" size="sm" asChild>
                         <Link href={`/leads/${lead.id}`}>Open</Link>
                       </Button>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </CardContent>
       </Card>
 
       {data?.meta && data.meta.total_pages > 1 && (
-        <div className="flex items-center justify-end gap-2 text-sm">
-          <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setParam("page", String(page - 1))}>
-            <ChevronLeft className="size-4" />
-          </Button>
-          <span className="text-muted-foreground">
-            Page {page} of {data.meta.total_pages}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={page >= data.meta.total_pages}
-            onClick={() => setParam("page", String(page + 1))}
-          >
-            <ChevronRight className="size-4" />
-          </Button>
-        </div>
+        <Pagination className="justify-end">
+          <PaginationContent>
+            <PaginationItem>
+              <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setParam("page", String(page - 1))}>
+                <ChevronLeft className="size-4" />
+              </Button>
+            </PaginationItem>
+            <PaginationItem>
+              <span className="px-2 text-sm text-muted-foreground">
+                Page {page} of {data.meta.total_pages}
+              </span>
+            </PaginationItem>
+            <PaginationItem>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={page >= data.meta.total_pages}
+                onClick={() => setParam("page", String(page + 1))}
+              >
+                <ChevronRight className="size-4" />
+              </Button>
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       )}
     </div>
   );

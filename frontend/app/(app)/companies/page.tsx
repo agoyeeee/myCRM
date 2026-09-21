@@ -4,12 +4,21 @@ import { useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CompanyFormDialog } from "@/components/company-form";
 import { useCompanies } from "@/lib/hooks";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Pagination, PaginationContent, PaginationItem } from "@/components/ui/pagination";
 
 export default function CompaniesPage() {
   const params = useSearchParams();
@@ -40,42 +49,42 @@ export default function CompaniesPage() {
       <Card>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b text-left text-xs text-muted-foreground">
-                  <th className="px-4 py-3">Name</th>
-                  <th className="px-4 py-3">Industry</th>
-                  <th className="px-4 py-3">Location</th>
-                  <th className="px-4 py-3">Website</th>
-                  <th className="px-4 py-3" />
-                </tr>
-              </thead>
-              <tbody>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Industry</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Website</TableHead>
+                  <TableHead />
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {isLoading &&
                   Array.from({ length: 5 }).map((_, i) => (
-                    <tr key={i}>
-                      <td colSpan={5} className="px-4 py-3">
+                    <TableRow key={i}>
+                      <TableCell colSpan={5} className="py-3">
                         <Skeleton className="h-5 w-full" />
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
                 {!isLoading && rows.length === 0 && (
-                  <tr>
-                    <td colSpan={5} className="px-4 py-10 text-center text-muted-foreground">
+                  <TableRow>
+                    <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">
                       No companies yet. Create your first one.
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 )}
                 {rows.map((c) => (
-                  <tr key={c.id} className="border-b last:border-0 hover:bg-secondary/30">
-                    <td className="px-4 py-3">
+                  <TableRow key={c.id}>
+                    <TableCell>
                       <Link href={`/companies/${c.id}`} className="font-medium hover:underline">
                         {c.name}
                       </Link>
-                    </td>
-                    <td className="px-4 py-3 text-muted-foreground">{c.industry ?? "–"}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{c.location ?? "–"}</td>
-                    <td className="px-4 py-3 text-muted-foreground">
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">{c.industry ?? "–"}</TableCell>
+                    <TableCell className="text-muted-foreground">{c.location ?? "–"}</TableCell>
+                    <TableCell className="text-muted-foreground">
                       {c.website ? (
                         <a href={c.website} target="_blank" rel="noreferrer" className="hover:underline">
                           {c.website.replace(/^https?:\/\//, "")}
@@ -83,32 +92,40 @@ export default function CompaniesPage() {
                       ) : (
                         "–"
                       )}
-                    </td>
-                    <td className="px-4 py-3 text-right">
+                    </TableCell>
+                    <TableCell className="text-right">
                       <Button variant="ghost" size="sm" asChild>
                         <Link href={`/companies/${c.id}`}>Open</Link>
                       </Button>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </CardContent>
       </Card>
 
       {data?.meta && data.meta.total_pages > 1 && (
-        <div className="flex items-center justify-end gap-2 text-sm">
-          <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => router_page(page - 1, params)}>
-            <ChevronLeft className="size-4" />
-          </Button>
-          <span className="text-muted-foreground">
-            Page {page} of {data.meta.total_pages}
-          </span>
-          <Button variant="outline" size="sm" disabled={page >= data.meta.total_pages}>
-            <ChevronRight className="size-4" />
-          </Button>
-        </div>
+        <Pagination className="justify-end">
+          <PaginationContent>
+            <PaginationItem>
+              <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => router_page(page - 1, params)}>
+                <ChevronLeft className="size-4" />
+              </Button>
+            </PaginationItem>
+            <PaginationItem>
+              <span className="px-2 text-sm text-muted-foreground">
+                Page {page} of {data.meta.total_pages}
+              </span>
+            </PaginationItem>
+            <PaginationItem>
+              <Button variant="outline" size="sm" disabled={page >= data.meta.total_pages} onClick={() => router_page(page + 1, params)}>
+                <ChevronRight className="size-4" />
+              </Button>
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       )}
     </div>
   );

@@ -3,6 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ContactFormDialog } from "@/components/contact-form";
 import { useContacts, useCompanies } from "@/lib/hooks";
@@ -58,47 +66,47 @@ export default function ContactsPage() {
       <Card>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b text-left text-xs text-muted-foreground">
-                  <th className="px-4 py-3">Name</th>
-                  <th className="px-4 py-3">Company</th>
-                  <th className="px-4 py-3">Title</th>
-                  <th className="px-4 py-3">Email</th>
-                  <th className="px-4 py-3">Phone</th>
-                </tr>
-              </thead>
-              <tbody>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Company</TableHead>
+                  <TableHead>Title</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Phone</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {contacts.isLoading &&
                   Array.from({ length: 5 }).map((_, i) => (
-                    <tr key={i}>
-                      <td colSpan={5} className="px-4 py-3">
+                    <TableRow key={i}>
+                      <TableCell colSpan={5} className="py-3">
                         <Skeleton className="h-5 w-full" />
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
                 {!contacts.isLoading && rows.length === 0 && (
-                  <tr>
-                    <td colSpan={5} className="px-4 py-10 text-center text-muted-foreground">
+                  <TableRow>
+                    <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">
                       No contacts yet. Add one from a company detail page.
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 )}
                 {rows.map((c) => (
-                  <tr key={c.id} className="border-b last:border-0 hover:bg-secondary/30">
-                    <td className="px-4 py-3 font-medium">{c.name}</td>
-                    <td className="px-4 py-3">
+                  <TableRow key={c.id}>
+                    <TableCell className="font-medium">{c.name}</TableCell>
+                    <TableCell>
                       <Link href={`/companies/${c.company_id}`} className="hover:underline">
                         {companyNames.get(c.company_id) ?? c.company_id}
                       </Link>
-                    </td>
-                    <td className="px-4 py-3 text-muted-foreground">{c.job_title ?? "–"}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{c.email ?? "–"}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{c.phone ?? "–"}</td>
-                  </tr>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">{c.job_title ?? "–"}</TableCell>
+                    <TableCell className="text-muted-foreground">{c.email ?? "–"}</TableCell>
+                    <TableCell className="text-muted-foreground">{c.phone ?? "–"}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </CardContent>
       </Card>

@@ -70,13 +70,14 @@ export function AuthForm() {
             <Button type="submit" className="w-full" disabled={busy}>
               {busy ? "Please wait…" : mode === "login" ? "Sign in" : "Create account"}
             </Button>
-            <button
+            <Button
               type="button"
-              className="w-full text-center text-sm text-muted-foreground underline-offset-4 hover:underline"
+              variant="link"
+              className="text-sm text-muted-foreground"
               onClick={() => setMode(mode === "login" ? "register" : "login")}
             >
               {mode === "login" ? "No account? Register" : "Have an account? Sign in"}
-            </button>
+            </Button>
           </form>
         </CardContent>
       </Card>

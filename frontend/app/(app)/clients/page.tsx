@@ -1,6 +1,14 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/status-badge";
@@ -35,43 +43,43 @@ export default function ClientsPage() {
       <Card>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b text-left text-xs text-muted-foreground">
-                  <th className="px-4 py-3">Company</th>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3">Converted</th>
-                </tr>
-              </thead>
-              <tbody>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Company</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Converted</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {isLoading &&
                   Array.from({ length: 3 }).map((_, i) => (
-                    <tr key={i}>
-                      <td colSpan={3} className="px-4 py-3">
+                    <TableRow key={i}>
+                      <TableCell colSpan={3} className="py-3">
                         <Skeleton className="h-5 w-full" />
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
                 {!isLoading && rows.length === 0 && (
-                  <tr>
-                    <td colSpan={3} className="px-4 py-10 text-center text-muted-foreground">
+                  <TableRow>
+                    <TableCell colSpan={3} className="py-10 text-center text-muted-foreground">
                       No clients yet. Convert a won lead from its detail page.
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 )}
                 {rows.map((c) => (
-                  <tr key={c.id} className="border-b last:border-0 hover:bg-secondary/30">
-                    <td className="px-4 py-3">
+                  <TableRow key={c.id}>
+                    <TableCell>
                       <div className="flex items-center gap-2 font-medium">
                         <Building2 className="size-4 text-muted-foreground" />
                         {c.company?.name ?? c.company_id}
                       </div>
-                    </td>
-                    <td className="px-4 py-3">
+                    </TableCell>
+                    <TableCell>
                       <StatusBadge status={c.status} />
-                    </td>
-                    <td className="px-4 py-3 text-muted-foreground">{fmtDate(c.converted_at)}</td>
-                    <td className="px-4 py-3 text-right">
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">{fmtDate(c.converted_at)}</TableCell>
+                    <TableCell className="text-right">
                       {c.status === "active" ? (
                         <Button variant="ghost" size="sm" onClick={() => setStatus(c.id, "inactive")}>
                           Deactivate
@@ -81,11 +89,11 @@ export default function ClientsPage() {
                           Activate
                         </Button>
                       )}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </CardContent>
       </Card>
